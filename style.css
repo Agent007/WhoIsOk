@@ -1,0 +1,175 @@
+#wrapper {
+	text-align: left;
+	margin: 0px auto;
+	padding: 0px;
+	border:0;
+	width: 700px;
+}
+
+#header {
+	margin: 0 0 20px 0;
+	background: #cacaca;
+	background: url("head-bg-green-red.gif") background-repeat: no-repeat; background-position: center; 
+	-webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+	padding: 0px 0px; width: 700px; height: 150px;
+	position: fixed; z-index: 0; float: left;
+}
+
+#header a, #header img{border:0;}
+
+
+body {background: #a3a3a3; margin: 0; padding: 0;}
+
+
+
+#headhide {
+	clear: both;
+	width: 700px; height:150px;
+	background: #9e2;
+	margin-top: 0px;
+}
+
+
+#about {
+	float: left;
+	width: 700px;
+	padding-top:10px; /* pushes column up or down */
+	background: #eee;
+	margin-top: 0px;
+	-moz-border-radius: 0 0 22px 22px;  
+    	-webkit-border-radius: 0 0 22px 22px;
+
+	-webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+
+
+#side-notok {
+	float: left;
+	width: 350px;
+	padding-top:160px; /* pushes column up or down */
+	background: #fff5f5;
+	background-image:url(notok-bg.png); background-repeat: no-repeat; background-position: center top;
+	margin-top: 0px;
+	-moz-border-radius: 0 0 22px 22px;  
+    	-webkit-border-radius: 0 0 22px 22px;
+    	
+    	-webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+
+
+
+#side-ok { 
+	margin: 0;
+	float: left;
+	width: 350px;
+	padding-top:160px; /* pushes column up or down */
+	background: #f5fff5;
+	background-image:url(ok-bg.png); background-repeat: no-repeat; background-position: center top;  
+	height: 1% /* Holly hack for Peekaboo Bug */
+	margin-top: 220px;
+	-moz-border-radius: 0 0 22px 22px;  
+    	-webkit-border-radius: 0 0 22px 22px;
+    	
+    	-webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+#footer {
+	clear: both;
+	padding:20px; margin-top:20px;
+	/*border-top: 1px solid #ccc;*/
+	/* background: #fff;*/
+	
+	text-align:center;
+	font: 11px/1.1 Calibri, 'Helvetica Neue', Helvetica, Arial, 'Liberation Sans', FreeSans, sans-serif;
+	line-height: 1.9; color: #ccc; font-size:12px;
+}
+
+
+
+
+div.img
+  {
+  margin:8px 20px;
+  border: 0;
+  /*background: #fff;*/
+  height:auto;
+  width:auto;
+  float:left;
+  text-align:center;
+  }
+div.img img
+  {
+  display:inline;
+  margin:5px;
+  padding:5px;
+  border:1px solid #e5e5e5;
+  background: #fff;
+  }
+
+#side-notok div.img a:hover img
+  {
+  border:1px solid #933;
+  background: #d88585;
+  }
+#side-ok div.img a:hover img
+  {
+  border:1px solid #090;
+  background: #95dd95;
+  }
+
+
+div.desc
+  {
+  text-align:center;
+  font-weight:normal;
+  font: 11px/1.1 Calibri, 'Helvetica Neue', Helvetica, Arial, 'Liberation Sans', FreeSans, sans-serif;
+  color: #666;
+  /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);*/
+  width:50px;
+  margin:2px;
+  }
+  
+
+
+ 
+#about h2 {
+	font:22px/1.1 Calibri, 'Helvetica Neue', Helvetica, Arial, 'Liberation Sans', FreeSans, sans-serif;
+	color: #333;
+	margin: 20px;
+	line-height: 1.4; letter-spacing: -.01em;
+	font-weight:normal;
+	border-bottom: 1px solid #eee;}
+
+#about p {
+	font: 12px/1.1 Calibri, 'Helvetica Neue', Helvetica, Arial, 'Liberation Sans', FreeSans, sans-serif;
+	line-height: 1.9;
+	color: #999;
+	margin: 20px;}
+
+
+p a:link {
+	color: #c00; text-decoration:none; border-bottom: 1px dotted #c00;}
+p a:visited {
+	color: #f00; text-decoration:none; border-bottom: 1px dotted #f00;}
+p a:hover {
+	color: #3c3; text-decoration: none; border-top: 1px dotted #3c3; border-bottom: 1px dotted #3c3;}
+p a:active {
+	color: #0f0;}
+
+
+
+#side-ok a:link, #side-notok a:link  {
+	color: #666; text-decoration:none;}
+#side-ok a:visited , #side-notok a:visited {
+	color: #666; text-decoration:none;}
+#side-ok a:hover, #side-notok a:hover {
+	color: #000; text-decoration: none;}
+#side-ok a:active, #side-notok a:active {
+	color: #999;}
+

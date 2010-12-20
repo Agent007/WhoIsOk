@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:fb="http://www.facebook.com/2008/fbml"><!-- TODO ensure camptability with HTML5--><!-- TODO rigorous QA across browsers -->
+  <head>
+    <title>WhoIsOk</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="description" content="GeoFields x" />
+    <meta name="author" content="Terry Allen, Jeff Lam, Henry Zhu" />
+    <link rel="home" title="Home" href="http://www.WhoIsOk.info/" />
+    <link rel="author" title="Feedback" href="mailto:x@x.com" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="tooltip.css"/>
+    <script src="http://cdn.jquerytools.org/1.2.5/jquery.tools.min.js"></script>
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="header">
+        <span style="padding:10px;">
+          <a href="http://www.whoisok.info/" title="Who Is OK?"><img src="whoisok-logo.png"/></a>
+          <p><fb:login-button autologoutlink="true" perms="friends_online_presence,friends_photo_video_tags,friends_photos,friends_status,friends_videos,friends_checkins"></fb:login-button></p>
+          <!--p><fb:like></fb:like></p-->
+          <form>
+            <label>Local Date & Time of Disaster:<input id="timeStamp" name="timeStamp" type="datetime-local" required="required"/></label>
+            <input type="submit"/>
+          </form>
+        </span>
+      </div>
+      <div id="container">
+        <div id="headhide">&nbsp;</div>
+        <div id="side-ok">
+          <div id="fb-root"></div>
+        </div>
+        <div id="side-notok">
+        </div>
+      </div>
+      <div id="footer">
+        <p>Who Is OK? is an application written for <a href="http://www.rhok.org/">RHoK</a> in Atlanta, GA. <a href="about.html">Learn more about Who Is OK?</a></p>
+      </div>
+    </div>
+    
+    <script type="text/javascript">
+      function getQueryParameter(parameterName) {
+        var queryString = window.top.location.search.substring(1);
+        var parameterName = parameterName + "=";
+        if (queryString.length > 0) {
+          begin = queryString.indexOf(parameterName);
+          if (begin != -1) {
+            begin += parameterName.length;
+            end = queryString.indexOf("&", begin);
+              if (end == -1) {
+              end = queryString.length
+            }
+            return unescape (queryString.substring(begin, end));
+          }
+        }
+        return null;
+      };
+      
+      var timeStamp;
+      var NOW = new Date();
+      var MILLISECONDS_PER_SECOND = 1000;
+      var queryParameterString = getQueryParameter('timeStamp');
+      
+      function padIfSingleDigit(digit) {
+        if (digit < 10) {
+          return '0' + digit;
+        } else {
+          return digit;
+        }
+      };
+      
+      if (null == queryParameterString) {
+        var date = padIfSingleDigit(NOW.getDate());
+        var hours = padIfSingleDigit(NOW.getHours());
+        var minutes = padIfSingleDigit(NOW.getMinutes());
+        document.getElementById('timeStamp').value = NOW.getFullYear() + '-' + (NOW.getMonth() + 1) + '-' + date + 'T' + hours + ':' + minutes;
+        timeStamp = NOW.getTime() / MILLISECONDS_PER_SECOND;
+      } else {
+        document.getElementById('timeStamp').value = queryParameterString;
+        timeStamp = (new Date(queryParameterString)).getTime() / MILLISECONDS_PER_SECOND;
+      }
+      
+      var DIV_TARGET = document.getElementById('fb-root');
+      
+      // TODO ensure other activities such as "liking" something, posting on another person's wall, and adding a friend are included...
+      // TODO rigorous verification of queries
+      var ACTIVE_CONTACTS_QUERY_STRING = "SELECT uid, name FROM user WHERE uid IN (SELECT source_id FROM stream WHERE created_time > {0} AND source_id IN (SELECT uid2 FROM friend WHERE uid1 = me()))";
+      var LAST_POST_QUERY_STRING = "SELECT source_id, message, attachment, created_time, attribution FROM stream WHERE source_id IN (SELECT uid FROM {0})";
+      var INACTIVE_CONTACTS_QUERY_STRING = "SELECT uid, name FROM user WHERE uid IN (SELECT source_id FROM stream WHERE created_time < {0} AND source_id IN (SELECT uid2 FROM friend WHERE uid1 = me()))";
+      
+      var findActiveContacts;
+
+      /**
+       * TODO document
+       */
+      var formatAttachment = function(attachment) {
+        var attachmentHTML = null;
+        
+        return attachmentHTML;
+      };
+            
+      /**
+       * TODO document
+       */
+      var formatLastPosting = function(lastPostingMapEntry) {
+        var lastPostingHTML = null;
+        if (lastPostingMapEntry) {
+          lastPostingHTML = lastPostingMapEntry.message + " " + lastPostingMapEntry.attachment + " " + (new Date(lastPostingMapEntry.created_time * MILLISECONDS_PER_SECOND)).toLocaleString() + " " + (lastPostingMapEntry.attribution?("via " + lastPostingMapEntry.attribution):'');
+        }
+        return lastPostingHTML;
+      };
+      
+      /**
+       * 
+       */
+      var formatFriend = function(row, lastPostingMap) {
+        var divContainer = document.createElement("div");
+        divContainer.innerHTML = "<div class='image' id='" + row.uid + "'><img width='50' height='50' src='http://graph.facebook.com/" + row.uid + "/picture'></img><div class='desc'>" + row.name + "</div></div><div class='tooltip'>" + formatLastPosting(lastPostingMap[row.uid]) + "</div>";
+        DIV_TARGET.appendChild(divContainer);
+        $("#" + row.uid).tooltip();
+      };
+      
+      window.fbAsyncInit = function() {
+        FB.init({appId: '172047416150106', status: true, cookie: true, xfbml: true});
+        findActiveContacts = function() {
+          var query = FB.Data.query(ACTIVE_CONTACTS_QUERY_STRING, timeStamp);
+          var lastPostQuery = FB.Data.query(LAST_POST_QUERY_STRING, query);
+          var inverseQuery = FB.Data.query(INACTIVE_CONTACTS_QUERY_STRING, timeStamp);
+          // TODO add "loading..." dialog
+          FB.Data.waitOn([query, lastPostQuery], function() {
+            var lastPostingMap = {};
+            FB.Array.forEach(lastPostQuery.value, function(row) {
+              lastPostingMap[row.source_id] = {message: row.message, attachment: row.attachment, created_time: row.created_time, attribution: row.attribution};
+            });
+            FB.Array.forEach(query.value, function(row) {
+              formatFriend(row, lastPostingMap);
+            });
+            FB.Array.forEach(inverseQuery.value, function(row) {
+              var divContainer = document.createElement("div");
+              divContainer.innerHTML = "<div class='image' id='" + row.uid + "'><img width='50' height='50' src='http://graph.facebook.com/" + row.uid + "/picture'></img><div class='desc'>" + row.name + "</div></div>";
+              document.getElementById('side-notok').appendChild(divContainer);
+            });
+          });
+        }();
+      };
+      
+      (function() {
+        var e = document.createElement('script');
+        e.type = 'text/javascript';
+        e.src = 'https://connect.facebook.net/en_US/all.js';//document.location.protocol + '//connect.facebook.net/en_US/all.js';
+        e.async = true;
+        document.getElementById('fb-root').appendChild(e);
+      }());
+    </script>
+  </body>
+</html>
